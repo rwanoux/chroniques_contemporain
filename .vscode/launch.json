@@ -5,12 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "name": "Launch Chrome",
             "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
+            "type": "pwa-chrome",
+            "url": "http://91.173.217.3:16001",
+            "webRoot": "${workspaceFolder}"
         }
+        
     ]
 }

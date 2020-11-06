@@ -1,52 +1,54 @@
-import {CofActor} from "./actors/actor.js";
-    import {DND5E} from '/systems/dnd5e/module/config.js';
-/*-- -- -- -- -- --- -- -- --- -- -- -- -- -- -- -
- ----------------INIT--------------------
- -- -- -- -- -- --- -- -- --- -- -- -- -- -- -- -*/
-Hooks.once("init", async function() {
+import {CofActor} from "../../systems/cof/module/actors/actor.js";
+import {extendSettings} from "./modules/extendSettings.js";
 
-    
-    // Define Sanity as an ability
-    DND5E.abilities["san"] = "Sanity";
-    DND5E.abilityAbbreviations["san"] = "san";
-    
-    // Add Sanity to the 5e Actor data model
-    const prep = Actor5e.prototype.prepareBaseData;	
+
+import {CocActorSheet} from "./modules/actors/actor-sheet.js";
+import {CocItemSheet} from "./modules/items/item-sheet.js";
+import {CocActor} from "./modules/actors/actor.js";
+import {CocItem} from "./modules/items/item.js";
+
+Hooks.once("init", async function () {
+
+    console.info("COC Module Initializing...");
+
+    // Define custom Entity classes
+    CONFIG.Actor.entityClass = CocActor;
+    CONFIG.Item.entityClass = CocItem;
+
+    // Create a namespace within the game global
+    // game.coc = {
+    //     config: COC
+    // };
+
+    // Register actor sheets
+    Actors.registerSheet("coc", CocActorSheet, {types: ["character", "npc"], makeDefault: true});
+    // Register item sheets
+    // Items.registerSheet("cof", CofItemSheet, {types: ["item", "capacity", "profile", "path", "species", "armor", "shield", "melee", "ranged", "spell", "trapping"], makeDefault: true});
+    Items.registerSheet("cof", CocItemSheet, {types: ["item", "capacity", "profile", "path", "species"], makeDefault: true});
+
+/*-- -- -- -- -- --- -- -- --- -- -- -- -- -- -- -
+modèle pour étendre le template
+ -- -- -- -- -- --- -- -- --- -- -- -- -- -- -- -
+ */
+ 
+    const prep = CofActor.prototype.prepareBaseData;	
     function extendActorData() {
-        const abl = this.data.data.abilities;
-        abl["san"] = abl["san"] || {value: 10, proficient: 0};
+        const at = this.data.data.attributes;
+        at["cp"] =  {
+            "key" : "cp",
+            "label" : "point de choc",
+            "abbrev" : "point de choc",
+            "base": 12,
+            "bonus": 0,
+            "value": 0,
+            "max": 10
+          };
         return prep.call(this);
     }
-    Actor5e.prototype.prepareBaseData = extendActorData;
+    CofActor.prototype.prepareBaseData = extendActorData;
     
-    // Add Survival resource counters
-    Hooks.on("renderActorSheet", (app, html, data) => {
-        const counters = html.find("div.counters");
-        const flags = data.actor.flags.oota || {};
-        counters.append(`
-        <div class="counter flexrow hunger">
-        <h4>Hunger</h4>
-        <div class="counter-value">
-          <input type="text" name="flags.oota.hunger" placeholder="0" value="${flags.hunger ?? 0}" data-dtype="Number"/>
-        </div>
-        </div>
-        <div class="counter flexrow thirst">
-        <h4>Thirst</h4>
-        <div class="counter-value">
-          <input type="text" name="flags.oota.thirst" placeholder="0" value="${flags.thirst ?? 0}" data-dtype="Number"/>
-        </div>
-        </div>
-        <div class="counter flexrow fatigue">
-        <h4>Fatigue</h4>
-        <div class="counter-value">
-          <input type="text" name="flags.oota.fatigue" placeholder="0" value="${flags.fatigue ?? 0}" data-dtype="Number"/>
-        </div>
-        </div>
-        `);
-    });
-    
-
 });
+
 
 
 
@@ -54,9 +56,25 @@ Hooks.once("ready", async function() {
 
     //----logo image
     var logo = document.getElementById("logo");
-    logo.setAttribute("src", "modules/chroniques_contemporain/images/CoClogo.png");
+    logo.setAttribute("src", "/modules/chroniques_contemporain/images/CoClogo.png");
 
 });
-Hooks.on("renderActorSheet", async function() {
 
-});
+Hooks.on("renderActorSheet", async function(app,html,data) {
+    //logo du vtt
+let logo=html.find("#logo-banner").find("img")[0];
+//header fiche de perso
+logo.src= "/modules/chroniques_contemporain/images/coc_logo.png";
+logo.style.marginTop="15px";
+html.find("#banner-right")[0].style.display="none";
+html.find("#banner-left")[0].style.display="none";
+html.find(".header-background")[0].style.background="modules/chroniques_contemporain/images/coc_header.png"
+
+
+let dg=html.find(".bg-darkgreen");
+
+dg.removeClass(".bg-darkgreen");
+dg.addClass("bg-dark");
+
+
+})

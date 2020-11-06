@@ -18,7 +18,7 @@
     ],
 
     "styles": [
-        "./style/CoC.css"
+        "./css/coc.css"
     ],
     "packs": [
 
