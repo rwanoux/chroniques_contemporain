@@ -5,7 +5,11 @@
 .cof.actor .window-content .editable .wrap .main .sidebar {
     background: url(../images/coc_msg.png) no-repeat white;
 }
-
+.app,
+ .window-app,
+section.window-content{
+    background: url(../images/coc_fd_canevas.png) no-repeat white;
+}
 
 
 

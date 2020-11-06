@@ -8,7 +8,7 @@ import {CocActor} from "./modules/actors/actor.js";
 import {CocItem} from "./modules/items/item.js";
 
 Hooks.once("init", async function () {
-
+extendSettings();
     console.info("COC Module Initializing...");
 
     // Define custom Entity classes
@@ -24,7 +24,7 @@ Hooks.once("init", async function () {
     Actors.registerSheet("coc", CocActorSheet, {types: ["character", "npc"], makeDefault: true});
     // Register item sheets
     // Items.registerSheet("cof", CofItemSheet, {types: ["item", "capacity", "profile", "path", "species", "armor", "shield", "melee", "ranged", "spell", "trapping"], makeDefault: true});
-    Items.registerSheet("cof", CocItemSheet, {types: ["item", "capacity", "profile", "path", "species"], makeDefault: true});
+    Items.registerSheet("coc", CocItemSheet, {types: ["item", "capacity", "profile", "path", "species"], makeDefault: true});
 
 /*-- -- -- -- -- --- -- -- --- -- -- -- -- -- -- -
 modèle pour étendre le template
@@ -43,6 +43,7 @@ modèle pour étendre le template
             "value": 0,
             "max": 10
           };
+
         return prep.call(this);
     }
     CofActor.prototype.prepareBaseData = extendActorData;
